@@ -2298,7 +2298,21 @@ namespace Xceed.Words.NET
       var tblCellMar = tblPr.Element( tblCellMarXName );
       if( tblCellMar == null )
       {
-        tblPr.AddFirst( new XElement( tblCellMarXName ) );
+        var tblWXName = XName.Get("tblW", DocX.w.NamespaceName);
+        var tblW = tblPr.Element(tblWXName);
+
+        // tblCellMar is put after tblW by MS Word
+        // If it goes to the first position, it is likely to preceed tblStyle,
+        // which will override the cell margin settings
+        if (tblW == null)
+        {                    
+          tblPr.AddFirst( new XElement( tblCellMarXName ) );
+        }
+        else
+        {
+          tblW.AddAfterSelf(new XElement(tblCellMarXName));
+        }
+     
         tblCellMar = tblPr.Element( tblCellMarXName );
       }
 
